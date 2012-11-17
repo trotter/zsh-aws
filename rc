@@ -1,0 +1,5 @@
+function accounts() {
+  find $HOME/.ec2/* -type d
+}
+
+export AWS_ACCOUNT="$(account | cut -f1 -d' ')"
