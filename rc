@@ -1,5 +1,23 @@
-function accounts() {
-  find $HOME/.ec2/* -type d
+function aws-accounts() {
+  find $HOME/.ec2/* -type d | xargs basename
 }
 
-export AWS_ACCOUNT="$(account | cut -f1 -d' ')"
+function aws-use-account() {
+  export AWS_ACCOUNT=$1
+  export AWS_ACCOUNT_HOME="$HOME/.ec2/$AWS_ACCOUNT"
+  export AWS_CREDENTIAL_FILE="$AWS_ACCOUNT_HOME/aws.credentials"
+  export EC2_PRIVATE_KEY="$(ls $AWS_ACCOUNT_HOME/pk-*.pem 2>/dev/null | head -1)"
+  export EC2_CERT="$(ls $AWS_ACCOUNT_HOME/cert-*.pem 2>/dev/null | head -1)"
+  export EC2_REGION="$(cat $AWS_ACCOUNT_HOME/region)"
+  export EC2_URL="https://ec2.$EC2_REGION.amazonaws.com"
+}
+
+aws-use-account "$(aws-accounts | head -1)"
+
+export EC2_HOME="$(cd $(dirname $(which elb-cmd))/$(dirname $(readlink $(which ec2-cmd)))/../jars && pwd)"
+export AWS_ELB_HOME="$(cd $(dirname $(which elb-cmd))/$(dirname $(readlink $(which elb-cmd)))/../jars && pwd)"
+export AWS_AUTO_SCALING_HOME="$(cd $(dirname $(which elb-cmd))/$(dirname $(readlink $(which as-cmd)))/../jars && pwd)"
+export AWS_CLOUDWATCH_HOME="$(cd $(dirname $(which elb-cmd))/$(dirname $(readlink $(which mon-cmd)))/../jars && pwd)"
+export AWS_IAM_HOME="$(cd $(dirname $(which elb-cmd))/$(dirname $(readlink $(which iam-usermod)))/../jars && pwd)"
+export AWS_SNS_HOME="$(cd $(dirname $(which elb-cmd))/$(dirname $(readlink $(which sns-cmd)))/../jars && pwd)"
+export SERVICE_HOME="$AWS_CLOUDWATCH_HOME"
