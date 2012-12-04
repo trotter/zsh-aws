@@ -1,3 +1,8 @@
+# To use this config you need a ~/.ec2 dir with subdirs under it for each ec2
+# account that you have. Each subdirectory should have a pk-*.pem file, a
+# cert-*.pem file, and a region file. The region file should contain one line
+# which specifies your default region.
+
 function aws-accounts() {
   find $HOME/.ec2/* -type d | xargs basename
 }
